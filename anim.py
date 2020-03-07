@@ -15,12 +15,12 @@ class Animator(FuncAnimation):
 
 
 
-		fps = 20
-		self.total_frames = int(T*1000 // fps)
+		interval = 20
+		self.total_frames = int(T*1000 // interval)
 		kwargs = {
 			"init_func": init,
 			"frames": self.total_frames,
-			"interval": fps,
+			"interval": interval,
 			"blit": True
 		}
 
@@ -31,7 +31,8 @@ class Animator(FuncAnimation):
 
 
 	def animate(self, i):
-		ts = np.linspace(0, self.T * i/self.total_frames, 50)
+		dt = self.T / 100
+		ts = np.arange(0, self.T * i/self.total_frames, dt)
 
 		xs = self.f_x(ts)
 		ys = self.f_y(ts)
