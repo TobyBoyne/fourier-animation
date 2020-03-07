@@ -2,6 +2,7 @@
 Calculates the Fourier coefficients for a given set of data points
 """
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -55,14 +56,18 @@ class Fourier:
 		f += self.d
 
 		n = np.arange(1, len(self.a_n)+1)
-		f += self.a_n * np.cos(2 * n * t * np.pi / self.L)
-		f += self.b_n * np.sin(2 * n * t * np.pi / self.L)
+		f += sum(self.a_n * np.cos(2 * n * t * np.pi / self.L))
+		f += sum(self.b_n * np.sin(2 * n * t * np.pi / self.L))
 
 		return f
 
 
 if __name__ == "__main__":
-	points = np.array([
-		[1, 2],
-		[4, 3]
-	])
+	xs = np.linspace(0, 4, 100)
+
+	points = np.array([xs, [np.heaviside(x - 2, 1) for x in xs]]).T
+
+	fourier = Fourier(points, 50)
+
+	plt.plot(xs, [fourier(x) for x in xs])
+	plt.show()
