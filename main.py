@@ -3,6 +3,7 @@ import numpy as np
 
 from draw import Drawer
 from fourier import Fourier
+from anim import Animator
 
 def split_points(points):
 	xs = points[:, :2]
@@ -25,4 +26,8 @@ if __name__ == "__main__":
 	ts = np.linspace(xs[0, 0], xs[-1, 0], 100)
 	plt.plot(fourier_x(ts), fourier_y(ts))
 	plt.plot(xs[:, 1], ys[:, 1])
+	plt.show()
+
+	anim_fig, anim_ax = plt.subplots()
+	anim = Animator(anim_fig, fourier_x, fourier_y, ts[-1])
 	plt.show()
