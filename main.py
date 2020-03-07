@@ -22,6 +22,7 @@ if __name__ == "__main__":
 	fourier_x = Fourier(xs, 5)
 	fourier_y = Fourier(ys, 5)
 
-	ts = xs[:, 0]
-	plt.plot(ts, [fourier_x(t) for t in ts])
+	ts = np.linspace(xs[0, 0], xs[-1, 0], 100)
+	plt.plot(fourier_x(ts), fourier_y(ts))
+	plt.plot(xs[:, 1], ys[:, 1])
 	plt.show()
