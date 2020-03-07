@@ -6,24 +6,35 @@ import numpy as np
 
 def get_points_for_trapz(points, N, L):
 	"""Convert an array of [t, x] points to be ready for integration
-	Output is a 2D array with columns [t, d, a_1, ..., a_n, b_1, ..., b_n],
-	   where each column corresponds to the value of the integrand at point t
-	These columns can then be integrated down via the trapezium rule
+	Output is a 2D array with rows [t, d, a_1, ..., a_n, b_1, ..., b_n],
+	   where each row corresponds to the value of the integrand at point t
+	These rows can then be integrated across via the trapezium rule
 
-	This will create columns up to the Nth coefficient of the Fourier series"""
+	This will create rows up to the Nth coefficient of the Fourier series"""
 
 	ts = points[:, 0]
 	xs = points[:, 1]
 
 	d = xs * 0.5
 
-	a_n = np.array([xs * np.cos(n * xs * np.pi / L) for n in range(1, N+1)])
+	a_n = np.array([xs * np.cos(n * ts * np.pi / L) for n in range(1, N+1)])
 
-	b_n = np.array([xs * np.sin(n * xs * np.pi / L) for n in range(1, N+1)])
+	b_n = np.array([xs * np.sin(n * ts * np.pi / L) for n in range(1, N+1)])
 
 	integrand_values = np.array([ts, d, *a_n, *b_n])
-	print(integrand_values.T)
-	return integrand_values.T
+	print(integrand_values)
+	print(integrate_coefficients(integrand_values, N))
+	return integrand_values
+
+def integrate_coefficients(integrand_values, N):
+	ts, values = integrand_values[0, :], integrand_values[1:, 0:]
+
+	coeffs = np.trapz(values, x=ts, axis=1)
+
+	d = coeffs[0]
+	a_n = coeffs[1:1+N]
+	b_n = coeffs[1+N:]
+
 
 if __name__ == "__main__":
 	points = np.array([
@@ -31,5 +42,5 @@ if __name__ == "__main__":
 		[4, 3]
 	])
 
-	L = 5
+	L = points[-1, 0] - points[0, 0]
 	get_points_for_trapz(points, 5, L)
