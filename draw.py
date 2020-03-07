@@ -1,5 +1,6 @@
 """
-Allows the user to draw onto a pyplot axis
+Allows the user to draw onto a pyplot axis. Recording begins when the mouse is clicked, and continues
+until the mouse is released.
 
 Uses matplotlib.pyplot events:
  - button_press_event
@@ -52,7 +53,8 @@ class Drawer:
 
 if __name__ == "__main__":
 	fig, ax = plt.subplots()
-	ax.plot([1,2,3,4,5])
+	ax.set_xlim([0, 1])
+	ax.set_ylim([0, 1])
 	draw = Drawer(fig, ax)
 	plt.show()
 	print(draw.points, draw.points.shape)
