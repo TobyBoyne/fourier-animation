@@ -3,16 +3,15 @@ from matplotlib.animation import FuncAnimation
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
-plt.style.use('seaborn-pastel')
-
-
-def init():
-	line.set_data([], [])
-	return line,
-
 
 class Animator(FuncAnimation):
 	def __init__(self, fig, fourier_x, fourier_y, T):
+
+		# init function for FuncAnimation
+		def init():
+			line.set_data([], [])
+			return line,
+
 		fps = 20
 		self.total_frames = int(T*1000 // fps)
 		kwargs = {
@@ -25,6 +24,7 @@ class Animator(FuncAnimation):
 		self.T = T
 		self.f_x = fourier_x
 		self.f_y = fourier_y
+
 
 
 	def animate(self, i):
