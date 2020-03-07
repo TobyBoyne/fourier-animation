@@ -30,7 +30,10 @@ class Drawer:
 	def start_plotting(self, event):
 		"""Start recording data"""
 		self.record_data = True
-		self.start_time = perf_counter()
+		# will not reset start time if some points have already been plotted
+		# allows for discontinuous drawing
+		if not self.start_time:
+			self.start_time = perf_counter()
 
 	def plot_point(self, event):
 		"""Plot a point at the current mouse (x, y) position
