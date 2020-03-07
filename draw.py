@@ -17,7 +17,8 @@ class Drawer:
 		self.ax = ax
 
 		# points is stored as a 2D array with 3 columns - time, x coord, y coord
-		self.points = np.array([])
+		# initialise to None - is set to a value when points are plotted
+		self.points = None
 		self.record_data = False
 		self.start_time = 0
 
@@ -40,7 +41,10 @@ class Drawer:
 			plt.draw()
 
 			t = perf_counter() - self.start_time
-			self.points = np.append(self.points, [t, x, y])
+			if self.points is not None:
+				self.points = np.append(self.points, [[t, x, y]], axis=0)
+			else:
+				self.points = np.array([[t, x, y]])
 
 	def stop_plotting(self, event):
 		"""Stop recording data"""
@@ -50,5 +54,5 @@ if __name__ == "__main__":
 	fig, ax = plt.subplots()
 	ax.plot([1,2,3,4,5])
 	draw = Drawer(fig, ax)
-
 	plt.show()
+	print(draw.points, draw.points.shape)
