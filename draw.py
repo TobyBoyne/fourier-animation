@@ -9,21 +9,34 @@ Uses matplotlib.pyplot events:
 
 import matplotlib.pyplot as plt
 import numpy as np
+from time import perf_counter
 
 class Drawer:
-	def __init__(self, fig):
+	def __init__(self, fig, ax):
 		self.fig = fig
+		self.ax = ax
+
+		# points is stored as a 2D array with 3 columns - time, x coord, y coord
 		self.points = np.array([])
 		self.record_data = False
+		self.start_time = 0
+
+		click_id =	fig.canvas.mpl_connect('button_press_event', self.draw_line)
+		move_id =	fig.canvas.mpl_connect('motion_notify_event', self.plot_point)
 
 	def draw_line(self, event):
-		print(event.xdata)
-		
+		"""Start recording data"""
+		self.record_data = True
+		self.start_time = perf_counter()
 
-fig, ax = plt.subplots()
-ax.plot([1,2,3,4,5])
-draw = Drawer(fig)
-user_input = fig.canvas.mpl_connect('button_press_event', draw.draw_line)
-plt.show()
-# while True:
-# 	draw.draw_line() # here you click on the plot
+	def plot_point(self, event):
+		if self.record_data and event.inaxes:
+			ax.plot(event.xdata, event.ydata, marker="x")
+			plt.draw()
+
+if __name__ == "__main__":
+	fig, ax = plt.subplots()
+	ax.plot([1,2,3,4,5])
+	draw = Drawer(fig, ax)
+
+	plt.show()
