@@ -38,7 +38,7 @@ class Drawer:
 		If the mouse has not yet been clicked, or the cursor is outside of axes, don't plot a point"""
 		if self.record_data and event.inaxes:
 			x, y = event.xdata, event.ydata
-			ax.plot(x, y, marker="x")
+			self.ax.plot(x, y, marker="x")
 			plt.draw()
 
 			t = perf_counter() - self.start_time
