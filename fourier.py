@@ -50,16 +50,24 @@ class Fourier:
 		self.b_n = coeffs[1+N:]
 
 
-	def __call__(self, t):
-		"""Evaluate the fourier series f(t) at a time t"""
-		f = 0
-		f += self.d
+	def __call__(self, ts):
+		"""Takes an array, and evaluate the fourier series f(t) for each t in ts
+		Returns an array of f(t)
+		If the input is an float, return an array of length 1"""
+		if type(ts) != np.ndarray:
+			ts = np.array([ts])
 
-		n = np.arange(1, len(self.a_n)+1)
-		f += sum(self.a_n * np.cos(2 * n * t * np.pi / self.L))
-		f += sum(self.b_n * np.sin(2 * n * t * np.pi / self.L))
+		fs = np.zeros_like(ts)
+		for i, t in enumerate(ts):
+			f = 0
+			f += self.d
 
-		return f
+			n = np.arange(1, len(self.a_n)+1)
+			f += sum(self.a_n * np.cos(2 * n * t * np.pi / self.L))
+			f += sum(self.b_n * np.sin(2 * n * t * np.pi / self.L))
+
+			fs[i] = f
+		return fs
 
 
 if __name__ == "__main__":
@@ -68,6 +76,5 @@ if __name__ == "__main__":
 	points = np.array([xs, [np.heaviside(x - 2, 1) for x in xs]]).T
 
 	fourier = Fourier(points, 50)
-
-	plt.plot(xs, [fourier(x) for x in xs])
+	plt.plot(xs, fourier(xs))
 	plt.show()
