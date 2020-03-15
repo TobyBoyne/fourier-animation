@@ -38,4 +38,5 @@ if __name__ == "__main__":
 	# --- animate Fourier drawing ---
 	anim_fig, anim_ax = plt.subplots()
 	anim = Animator(anim_fig, anim_ax, fourier_x, fourier_y, ts[-1])
+	anim.save('gifs\drawing.gif', writer='imagemagick', fps=30)
 	plt.show()
