@@ -4,23 +4,33 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+
+# TODO:
+#  draw circles to show Fourier coefficients
+#  save animation so that it runs smoothly!
+# https://towardsdatascience.com/animations-with-matplotlib-d96375c5442c
+
 class Animator(FuncAnimation):
 	def __init__(self, fig, ax, fourier_x, fourier_y, T):
-
 		# init function for FuncAnimation
 		self.line, = ax.plot([], [], lw=3)
+		self.x_data = []
+		self.y_data = []
+
 		def init():
+			self.x_data = []
+			self.y_data = []
 			self.line.set_data([], [])
 			return self.line,
 
 
-
-		interval = 20
-		self.total_frames = int(T*1000 // interval)
+		# time delay between frames
+		self.interval = 20
+		self.total_frames = int(T*1000 // self.interval)
 		kwargs = {
 			"init_func": init,
 			"frames": self.total_frames,
-			"interval": interval,
+			"interval": self.interval,
 			"blit": True
 		}
 
@@ -31,12 +41,16 @@ class Animator(FuncAnimation):
 
 
 	def animate(self, i):
-		dt = self.T / 100
-		ts = np.arange(0, self.T * i/self.total_frames, dt)
+		print(self.total_frames, i)
+		t = i * (self.interval / 1000)
 
-		xs = self.f_x(ts)
-		ys = self.f_y(ts)
-		self.line.set_data(xs, ys)
+		x = self.f_x(t)[0]
+		y = self.f_y(t)[0]
+
+		self.x_data.append(x)
+		self.y_data.append(y)
+
+		self.line.set_data(self.x_data, self.y_data)
 		return self.line,
 
 
