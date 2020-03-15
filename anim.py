@@ -26,22 +26,20 @@ class Animator(FuncAnimation):
 
 		# time delay between frames
 		self.interval = 20
-		self.total_frames = int(T*1000 // self.interval)
+		total_frames = int(T*1000 // self.interval)
 		kwargs = {
 			"init_func": init,
-			"frames": self.total_frames,
+			"frames": total_frames,
 			"interval": self.interval,
 			"blit": True
 		}
 
 		super().__init__(fig, self.animate, **kwargs)
-		self.T = T
 		self.f_x = fourier_x
 		self.f_y = fourier_y
 
 
 	def animate(self, i):
-		print(self.total_frames, i)
 		t = i * (self.interval / 1000)
 
 		x = self.f_x(t)[0]
@@ -56,5 +54,7 @@ class Animator(FuncAnimation):
 
 if __name__ == "__main__":
 	fig, ax = plt.subplots()
-	anim = Animator(fig, ax, np.sin, np.cos, 6.28)
+	ax.set_xlim([-2, 2])
+	ax.set_ylim([-2, 2])
+	anim = Animator(fig, ax, lambda x: [np.sin(x + 0.25)], lambda y: [np.cos(y)], 6.28)
 	plt.show()
