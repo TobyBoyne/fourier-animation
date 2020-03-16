@@ -46,9 +46,9 @@ class Drawer:
 
 			t = perf_counter() - self.start_time
 			if self.points is not None:
-				self.points = np.append(self.points, [[t, x, y]], axis=0)
+				self.points = np.append(self.points, [[t, x + 1j * y]], axis=0)
 			else:
-				self.points = np.array([[t, x, y]])
+				self.points = np.array([[t, x + 1j * y]])
 
 	def stop_plotting(self, event):
 		"""Stop recording data"""
