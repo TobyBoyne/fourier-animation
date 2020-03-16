@@ -5,12 +5,6 @@ from draw import Drawer
 from fourier import Fourier
 from anim import Animator
 
-def split_points(points):
-	"""Split the [t, x, y] points into [t, x] and [t, y] so that two different Fourier series can be made"""
-	xs = points[:, :2]
-	ys = points[:, (0,2)]
-
-	return xs, ys
 
 if __name__ == "__main__":
 	# number of coefficients in Fourier series
@@ -24,19 +18,22 @@ if __name__ == "__main__":
 	plt.show()
 
 	# --- find Fourier series for drawn shape ---
-	xs, ys = split_points(draw.points)
-
-	fourier_x = Fourier(xs, N)
-	fourier_y = Fourier(ys, N)
+	fourier = Fourier(draw.points, N)
 
 	# --- plot drawn shape against Fourier approximation ---
-	ts = np.linspace(xs[0, 0], xs[-1, 0], 100)
-	plt.plot(fourier_x(ts), fourier_y(ts))
-	plt.plot(xs[:, 1], ys[:, 1])
+	ps = draw.points
+	t_start, t_end = ps[0, 0].real, ps[-1, 0].real
+	ts = np.linspace(t_start, t_end, 100)
+	plt.plot(ps[:, 1].real, ps[:, 1].imag)
+
+	f = fourier(ts)
+	plt.plot(f.real, f.imag)
+
+	plt.legend(("User Input", "Fourier Approximation"))
 	plt.show()
 
 	# --- animate Fourier drawing ---
 	anim_fig, anim_ax = plt.subplots()
-	anim = Animator(anim_fig, anim_ax, fourier_x, fourier_y, ts[-1])
+	anim = Animator(anim_fig, anim_ax, fourier, ts[-1])
 	anim.save('gifs\drawing.gif', writer='imagemagick', fps=30)
 	plt.show()

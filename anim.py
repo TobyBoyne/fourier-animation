@@ -26,7 +26,7 @@ class Animator(FuncAnimation):
 
 		# time delay between frames
 		self.interval = 20
-		total_frames = int(T * 1000 // self.interval) + 10
+		total_frames = int(T*1000 // self.interval)
 		kwargs = {
 			"init_func": init,
 			"frames": total_frames,
@@ -55,5 +55,5 @@ if __name__ == "__main__":
 	fig, ax = plt.subplots()
 	ax.set_xlim([-2, 2])
 	ax.set_ylim([-2, 2])
-	anim = Animator(fig, ax, lambda x: [np.exp(5j * x)], 6.28 / 5)
+	anim = Animator(fig, ax, lambda x: [np.exp(1j * x)], 6.28)
 	plt.show()
