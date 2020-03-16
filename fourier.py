@@ -11,15 +11,16 @@ class Fourier:
 		# self.c stores all coefficients of the fourier series
 		# self.n stores the value of n that each coefficient corresponds to
 		#   self.n == [0, 1, -1, 2, -2, 3, -3, ...]
+
 		self.c = np.zeros(2 * N + 1)
 		self.n = np.array([(n // 2) * (-1) ** (n % 2) for n in range(1, 2 * N + 2)])
 
 		self.L = points[-1, 0] - points[0, 0]
 
-		values = self.get_points_for_trapz(points, N)
-		self.integrate_coefficients(values, N)
+		values = self.get_points_for_trapz(points)
+		self.integrate_coefficients(values)
 
-	def get_points_for_trapz(self, points, N):
+	def get_points_for_trapz(self, points):
 		"""Convert an array of [t, x] points to be ready for integration
 		Output is a 2D array with rows [t, c_0],
 		   where each row corresponds to the value of the integrand at point t
@@ -38,7 +39,7 @@ class Fourier:
 		return integrand_values
 
 
-	def integrate_coefficients(self, integrand_values, N):
+	def integrate_coefficients(self, integrand_values):
 		ts, values = integrand_values[0, :], integrand_values[1:, 0:]
 
 		coeffs = np.trapz(values, x=ts, axis=1)
@@ -54,18 +55,21 @@ class Fourier:
 		if type(ts) != np.ndarray:
 			ts = np.array([ts])
 
-		fs = np.zeros_like(ts)
+		fs = np.zeros_like(ts, dtype=np.complex_)
 		for i, t in enumerate(ts):
 			f = sum(self.c * np.exp(-1j * self.n * t * 2 * np.pi / self.L))
 			fs[i] = f
+
 		return fs
 
 
 if __name__ == "__main__":
-	xs = np.linspace(0, 4, 100)
+	ts = np.linspace(0, 6.28, 500)
 
-	points = np.array([xs, [np.heaviside(x - 2, 1) for x in xs]]).T
+	points = np.array([ts, np.sin(ts - 2) + 1j * np.cos(ts)]).T
+	plt.plot(points[:,1].real, points[:,1].imag)
 
-	fourier = Fourier(points, 50)
-	plt.plot(xs, fourier(xs))
+	fourier = Fourier(points, 20)
+	f_points = fourier(ts)
+	plt.plot(f_points.real, f_points.imag)
 	plt.show()
