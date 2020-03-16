@@ -11,7 +11,7 @@ from matplotlib.animation import FuncAnimation
 # https://towardsdatascience.com/animations-with-matplotlib-d96375c5442c
 
 class Animator(FuncAnimation):
-	def __init__(self, fig, ax, fourier_x, fourier_y, T):
+	def __init__(self, fig, ax, fourier, T):
 		# init function for FuncAnimation
 		self.line, = ax.plot([], [], lw=3)
 		self.x_data = []
@@ -26,7 +26,7 @@ class Animator(FuncAnimation):
 
 		# time delay between frames
 		self.interval = 20
-		total_frames = int(T*1000 // self.interval)
+		total_frames = int(T * 1000 // self.interval) + 10
 		kwargs = {
 			"init_func": init,
 			"frames": total_frames,
@@ -35,15 +35,14 @@ class Animator(FuncAnimation):
 		}
 
 		super().__init__(fig, self.animate, **kwargs)
-		self.f_x = fourier_x
-		self.f_y = fourier_y
+		self.f = fourier
 
 
 	def animate(self, i):
 		t = i * (self.interval / 1000)
 
-		x = self.f_x(t)[0]
-		y = self.f_y(t)[0]
+		p = self.f(t)[0]
+		x, y = p.real, p.imag
 
 		self.x_data.append(x)
 		self.y_data.append(y)
@@ -56,5 +55,5 @@ if __name__ == "__main__":
 	fig, ax = plt.subplots()
 	ax.set_xlim([-2, 2])
 	ax.set_ylim([-2, 2])
-	anim = Animator(fig, ax, lambda x: [np.sin(x + 0.25)], lambda y: [np.cos(y)], 6.28)
+	anim = Animator(fig, ax, lambda x: [np.exp(5j * x)], 6.28 / 5)
 	plt.show()
