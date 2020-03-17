@@ -5,12 +5,12 @@ from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 
-# TODO:
-#  draw circles to show Fourier coefficients
-#  save animation so that it runs smoothly!
-# https://towardsdatascience.com/animations-with-matplotlib-d96375c5442c
-
 class Animator(FuncAnimation):
+	"""Object stores all lines to be animated
+	Main drawing stored in self.line
+	Arrows of coefficients stored in self.arrows
+	init() is called at the beginning of each loop
+	animate() is called at each frame"""
 	def __init__(self, fig, ax, fourier, T):
 		# init function for FuncAnimation
 		self.line, = ax.plot([], [], lw=3)
@@ -49,7 +49,7 @@ class Animator(FuncAnimation):
 		self.x_data.append(x)
 		self.y_data.append(y)
 		self.line.set_data(self.x_data, self.y_data)
-		
+
 		last_end = 0 + 0j
 		for arrow in self.arrows:
 			# update each arrow, starting the arrow at the end of the previous one
@@ -59,6 +59,7 @@ class Animator(FuncAnimation):
 
 
 class Arrow:
+	"""Straight line that represents a coefficient of the Fourier series"""
 	def __init__(self, ax, x, y, n, c, L):
 		self.n = n
 		self.c = c
@@ -94,6 +95,5 @@ if __name__ == "__main__":
 	fig, ax = plt.subplots()
 	ax.set_xlim([-2, 2])
 	ax.set_ylim([-2, 2])
-	#a = Arrow(ax, 0, 0.2, 1, 1+1j)
-	#anim = Animator(fig, ax, lambda x: [np.exp(1j * x)], 6.28)
+	
 	plt.show()
