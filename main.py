@@ -42,11 +42,12 @@ def run(Ns, save_anim=False):
 		anim = Animator(anim_fig, anim_ax, fourier, ts[-1])
 
 	if save_anim:
-		anim.save('gifs\drawing.gif', writer='imagemagick', fps=30)
+		fig.savefig('images\comparison.png')
+		anim.save('images\drawing.gif', writer='imagemagick', fps=30)
 	plt.show()
 
 if __name__ == "__main__":
 	# number of coefficients in Fourier series
 	Ns = (2, 12)
 
-	run(Ns, save_anim=False)
+	run(Ns, save_anim=True)
