@@ -18,6 +18,7 @@ class Animator(FuncAnimation):
 		self.y_data = []
 
 		def init():
+			# create line and arrows
 			self.x_data = []
 			self.y_data = []
 			self.line.set_data([], [])
@@ -51,9 +52,26 @@ class Animator(FuncAnimation):
 		return self.line,
 
 
+class Arrow:
+	def __init__(self, ax, x, y, n, c):
+		self.origin = x + 1j * y
+		self.n = n
+		self.c = c
+
+		dx, dy = c.real, c.imag
+		self.line = ax.arrow(x, y, dx, dy)
+
+	def update(self, t):
+		d = self.origin + self.c * np.exp(1j * self.n * t)
+		points = [(i.real, i.imag) for i in (self.origin, self.origin + d)]
+		self.line.set_xy(points)
+
+
 if __name__ == "__main__":
 	fig, ax = plt.subplots()
 	ax.set_xlim([-2, 2])
 	ax.set_ylim([-2, 2])
-	anim = Animator(fig, ax, lambda x: [np.exp(1j * x)], 6.28)
+	a = Arrow(ax, 0, 0.2, 1, 1+1j)
+	a.update(3.14)
+	#anim = Animator(fig, ax, lambda x: [np.exp(1j * x)], 6.28)
 	plt.show()
