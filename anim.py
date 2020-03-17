@@ -1,9 +1,8 @@
-from matplotlib.animation import FuncAnimation
-
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+from fourier import Fourier
 
 class Animator(FuncAnimation):
 	"""Object stores all lines to be animated
@@ -95,5 +94,13 @@ if __name__ == "__main__":
 	fig, ax = plt.subplots()
 	ax.set_xlim([-2, 2])
 	ax.set_ylim([-2, 2])
-	
+
+	ts = np.linspace(0, 6.28, 100)
+	xs = 0.5 * np.cos(ts) + 0.5 * np.cos(2 * ts)
+	ys = np.sin(ts) + 0.25
+
+	points = np.array([ts, xs + 1j * ys]).Ts
+	f = Fourier(points, N=2)
+
+	anim = Animator(fig, ax, f, 6.28)
 	plt.show()
