@@ -6,10 +6,7 @@ from fourier import Fourier
 from anim import Animator
 
 
-if __name__ == "__main__":
-	# number of coefficients in Fourier series
-	Ns = (2, 12)
-
+def run(Ns, save_anim=False):
 	# --- user input ---
 	fig, ax = plt.subplots()
 	ax.set_xlim([0, 1])
@@ -44,5 +41,12 @@ if __name__ == "__main__":
 		anim_ax.set_title(f"N = {len(fourier.n) // 2}")
 		anim = Animator(anim_fig, anim_ax, fourier, ts[-1])
 
-	anim.save('gifs\drawing.gif', writer='imagemagick', fps=30)
+	if save_anim:
+		anim.save('gifs\drawing.gif', writer='imagemagick', fps=30)
 	plt.show()
+
+if __name__ == "__main__":
+	# number of coefficients in Fourier series
+	Ns = (2, 12)
+
+	run(Ns, save_anim=False)
