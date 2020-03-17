@@ -67,6 +67,17 @@ class Arrow:
 		self.line.set_xy(points)
 
 
+def create_arrows(ax, fourier):
+	"""Create arrows from the coefficients of a Fourier series"""
+	p = 0 + 0j
+	arrows = []
+	for c, n in zip(fourier.c, fourier.n):
+		arrow = Arrow(ax, p.real, p.imag, n, c)
+		arrows.append(arrow)
+
+	return arrows
+
+
 if __name__ == "__main__":
 	fig, ax = plt.subplots()
 	ax.set_xlim([-2, 2])
