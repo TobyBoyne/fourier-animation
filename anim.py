@@ -14,6 +14,7 @@ class Animator(FuncAnimation):
 	def __init__(self, fig, ax, fourier, T):
 		# init function for FuncAnimation
 		self.line, = ax.plot([], [], lw=3)
+		self.arrows = create_arrows(ax, fourier)
 		self.x_data = []
 		self.y_data = []
 
@@ -22,7 +23,7 @@ class Animator(FuncAnimation):
 			self.x_data = []
 			self.y_data = []
 			self.line.set_data([], [])
-			return self.line,
+			return (self.line, *[a.line for a in self.arrows])
 
 
 		# time delay between frames
@@ -47,24 +48,34 @@ class Animator(FuncAnimation):
 
 		self.x_data.append(x)
 		self.y_data.append(y)
-
 		self.line.set_data(self.x_data, self.y_data)
-		return self.line,
+		
+		last_end = 0 + 0j
+		for arrow in self.arrows:
+			# update each arrow, starting the arrow at the end of the previous one
+			last_end = arrow.update(last_end, t)
+
+		return (self.line, *[a.line for a in self.arrows])
 
 
 class Arrow:
-	def __init__(self, ax, x, y, n, c):
-		self.origin = x + 1j * y
+	def __init__(self, ax, x, y, n, c, L):
 		self.n = n
 		self.c = c
+		self.L = L
 
 		dx, dy = c.real, c.imag
-		self.line = ax.arrow(x, y, dx, dy)
+		self.line, = ax.plot((x, x + dx), (y, y + dy), lw=1)
 
-	def update(self, t):
-		d = self.origin + self.c * np.exp(1j * self.n * t)
-		points = [(i.real, i.imag) for i in (self.origin, self.origin + d)]
-		self.line.set_xy(points)
+	def update(self, start, t):
+		end = start + self.c * np.exp(-1j * self.n * t * 2 * np.pi / self.L)
+		points = [
+			(start.real, end.real),
+			(start.imag, end.imag)
+		]
+		self.line.set_data(points)
+
+		return end
 
 
 def create_arrows(ax, fourier):
@@ -72,8 +83,9 @@ def create_arrows(ax, fourier):
 	p = 0 + 0j
 	arrows = []
 	for c, n in zip(fourier.c, fourier.n):
-		arrow = Arrow(ax, p.real, p.imag, n, c)
+		arrow = Arrow(ax, p.real, p.imag, n, c, fourier.L)
 		arrows.append(arrow)
+		p += c
 
 	return arrows
 
@@ -82,7 +94,6 @@ if __name__ == "__main__":
 	fig, ax = plt.subplots()
 	ax.set_xlim([-2, 2])
 	ax.set_ylim([-2, 2])
-	a = Arrow(ax, 0, 0.2, 1, 1+1j)
-	a.update(3.14)
+	#a = Arrow(ax, 0, 0.2, 1, 1+1j)
 	#anim = Animator(fig, ax, lambda x: [np.exp(1j * x)], 6.28)
 	plt.show()
