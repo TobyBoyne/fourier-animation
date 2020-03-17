@@ -36,11 +36,13 @@ if __name__ == "__main__":
 
 	# --- animate Fourier drawing ---
 	anim_fig, anim_axs = plt.subplots(1, len(Ns))
+	anim_fig.suptitle(f"Fourier approximations of orders {Ns}")
 	anim = None
 	for anim_ax, fourier in zip(anim_axs, fouriers):
 		anim_ax.set_xlim([0, 1])
 		anim_ax.set_ylim([0, 1])
+		anim_ax.set_title(f"N = {len(fourier.n) // 2}")
 		anim = Animator(anim_fig, anim_ax, fourier, ts[-1])
 
-	plt.show()
 	anim.save('gifs\drawing.gif', writer='imagemagick', fps=30)
+	plt.show()
