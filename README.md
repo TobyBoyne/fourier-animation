@@ -1,5 +1,5 @@
 # fourier-animation
-Recreates a hand-drawn image by calculating its complex Fourier Series representation.
+Recreates a hand-drawn image by calculating its complex Fourier Series representation. Examples can be found in the `images` folder.
 
 ## Usage
 Run the `main.py` file, and draw the image in the figure that opens. Once the image has been drawn, close the figure. The next figure shows a comparison between the Fourier approximations, and the hand drawn image. Close this figure to create the drawing animation.
