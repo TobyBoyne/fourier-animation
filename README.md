@@ -8,7 +8,10 @@ To change the number of coefficients of the Fourier series produced, change the 
 
 To *not* save the figure (this will make the project run faster), pass `save_anim=False` into the `run()` function.
 
-## Author
-Created by Toby Boyne
+## Skills
+- Apply skills learnt in lectures to calculate a Fourier series of an arbitrary input
+- Use matplotlib to create static and animated visualisations
+
+## Inspiration
 
 Inspired by 3Blue1Brown's video: [But what is a Fourier series?](https://youtu.be/r6sGWTCMz2k)
