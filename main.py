@@ -3,7 +3,7 @@ import numpy as np
 
 from draw import Drawer
 from fourier import Fourier
-from anim import Animator
+from anim import Animator, GroupAnimator
 
 
 def run(Ns, save_anim=False):
@@ -34,16 +34,18 @@ def run(Ns, save_anim=False):
 	# --- animate Fourier drawing ---
 	anim_fig, anim_axs = plt.subplots(1, len(Ns))
 	anim_fig.suptitle(f"Fourier approximations of orders {Ns}")
-	anim = None
+	anims = []
 	for anim_ax, fourier in zip(anim_axs, fouriers):
 		anim_ax.set_xlim([0, 1])
 		anim_ax.set_ylim([0, 1])
 		anim_ax.set_title(f"N = {len(fourier.n) // 2}")
-		anim = Animator(anim_fig, anim_ax, fourier, ts[-1])
+		anims.append(Animator(anim_ax, fourier))
+
+	group_anim = GroupAnimator(anim_fig, anims, ts[-1])
 
 	if save_anim:
 		fig.savefig('images\comparison.png')
-		anim.save('images\drawing.gif', writer='imagemagick', fps=30)
+		group_anim.save('images\drawing.gif', writer='imagemagick', fps=30)
 	plt.show()
 
 if __name__ == "__main__":
