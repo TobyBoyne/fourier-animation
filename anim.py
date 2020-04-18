@@ -10,7 +10,7 @@ INTERVAL = 20
 class GroupAnimator(FuncAnimation):
 	"""Class to store multiple Animator objects, and render them side-by-side
 	Allows for multiple Fourier drawings to be saved in a single .gif"""
-	def __init__(self, anims, T):
+	def __init__(self, fig, anims, T):
 		self.anims = anims
 		total_frames = int(T * 1000 // INTERVAL)
 		kwargs = {
@@ -123,5 +123,5 @@ if __name__ == "__main__":
 		anims.append(Animator(ax, f))
 		ax.set_xlim((-2, 2))
 		ax.set_ylim((-2, 2))
-	group_anims = GroupAnimator(anims, 6.28)
+	group_anims = GroupAnimator(fig, anims, 6.28)
 	plt.show()
