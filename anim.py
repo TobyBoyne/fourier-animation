@@ -8,6 +8,8 @@ from fourier import Fourier
 INTERVAL = 20
 
 class GroupAnimator(FuncAnimation):
+	"""Class to store multiple Animator objects, and render them side-by-side
+	Allows for multiple Fourier drawings to be saved in a single .gif"""
 	def __init__(self, anims, T):
 		self.anims = anims
 		total_frames = int(T * 1000 // INTERVAL)
@@ -39,32 +41,13 @@ class Animator:
 	Arrows of coefficients stored in self.arrows
 	init() is called at the beginning of each loop
 	animate() is called at each frame"""
-	def __init__(self, fig, ax, fourier, T):
+	def __init__(self, ax, fourier):
 		# init function for FuncAnimation
 		self.line, = ax.plot([], [], lw=3)
 		self.arrows = create_arrows(ax, fourier)
 		self.x_data = []
 		self.y_data = []
 
-		# def init():
-		# 	# create line and arrows
-		# 	self.x_data = []
-		# 	self.y_data = []
-		# 	self.line.set_data([], [])
-		# 	return (self.line, *[a.line for a in self.arrows])
-
-
-		# time delay between frames
-		# self.interval = 20
-		# total_frames = int(T*1000 // self.interval)
-		# kwargs = {
-		# 	"init_func": self.init_func,
-		# 	"frames": total_frames,
-		# 	"interval": self.interval,
-		# 	"blit": True
-		# }
-		#
-		# super().__init__(fig, self.animate, **kwargs)
 		self.f = fourier
 
 	def init_func(self):
@@ -126,7 +109,7 @@ def create_arrows(ax, fourier):
 
 if __name__ == "__main__":
 	fig, axes = plt.subplots(1, 2)
-	fig.set_size_inches(18.5, 10.5)
+	fig.set_size_inches(14, 7)
 
 	ts = np.linspace(0, 6.28, 100)
 	xs = 0.5 * np.cos(ts) + 0.5 * np.cos(2 * ts)
@@ -137,7 +120,7 @@ if __name__ == "__main__":
 	anims = []
 	for n, ax in enumerate(axes):
 		f = Fourier(points, N=n+1)
-		anims.append(Animator(fig, ax, f, 6.28))
+		anims.append(Animator(ax, f))
 		ax.set_xlim((-2, 2))
 		ax.set_ylim((-2, 2))
 	group_anims = GroupAnimator(anims, 6.28)
