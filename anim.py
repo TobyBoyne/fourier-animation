@@ -8,7 +8,7 @@ from fourier import Fourier
 INTERVAL = 20
 
 class GroupAnimator(FuncAnimation):
-	def __init__(self, T, *anims):
+	def __init__(self, anims, T):
 		self.anims = anims
 		total_frames = int(T * 1000 // INTERVAL)
 		kwargs = {
@@ -125,18 +125,20 @@ def create_arrows(ax, fourier):
 
 
 if __name__ == "__main__":
-	fig, ax = plt.subplots()
-	ax.set_xlim([-2, 2])
-	ax.set_ylim([-2, 2])
+	fig, axes = plt.subplots(1, 2)
+	fig.set_size_inches(18.5, 10.5)
 
 	ts = np.linspace(0, 6.28, 100)
 	xs = 0.5 * np.cos(ts) + 0.5 * np.cos(2 * ts)
 	ys = np.sin(ts) + 0.25
 
 	points = np.array([ts, xs + 1j * ys]).T
-	f1 = Fourier(points, N=1)
-	f2 = Fourier(points, N=2)
-	anim1 = Animator(fig, ax, f1, 6.28)
-	anim2 = Animator(fig, ax, f2, 6.28)
-	group_anims = GroupAnimator(6.28, anim1, anim2)
+
+	anims = []
+	for n, ax in enumerate(axes):
+		f = Fourier(points, N=n+1)
+		anims.append(Animator(fig, ax, f, 6.28))
+		ax.set_xlim((-2, 2))
+		ax.set_ylim((-2, 2))
+	group_anims = GroupAnimator(anims, 6.28)
 	plt.show()
