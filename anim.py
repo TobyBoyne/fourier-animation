@@ -4,7 +4,36 @@ from matplotlib.animation import FuncAnimation
 
 from fourier import Fourier
 
-class Animator(FuncAnimation):
+# time delay between frames
+INTERVAL = 20
+
+class GroupAnimator(FuncAnimation):
+	def __init__(self, T, *anims):
+		self.anims = anims
+		total_frames = int(T * 1000 // INTERVAL)
+		kwargs = {
+			"init_func": self.init_func,
+			"frames": total_frames,
+			"interval": INTERVAL,
+			"blit": True
+		}
+
+		super().__init__(fig, self.animate, **kwargs)
+
+	def init_func(self):
+		anim_data = []
+		for anim in self.anims:
+			anim_data += anim.init_func()
+		return anim_data
+
+	def animate(self, i):
+		anim_data = []
+		for anim in self.anims:
+			anim_data += anim.animate(i)
+		return anim_data
+
+
+class Animator:
 	"""Object stores all lines to be animated
 	Main drawing stored in self.line
 	Arrows of coefficients stored in self.arrows
@@ -17,30 +46,35 @@ class Animator(FuncAnimation):
 		self.x_data = []
 		self.y_data = []
 
-		def init():
-			# create line and arrows
-			self.x_data = []
-			self.y_data = []
-			self.line.set_data([], [])
-			return (self.line, *[a.line for a in self.arrows])
+		# def init():
+		# 	# create line and arrows
+		# 	self.x_data = []
+		# 	self.y_data = []
+		# 	self.line.set_data([], [])
+		# 	return (self.line, *[a.line for a in self.arrows])
 
 
 		# time delay between frames
-		self.interval = 20
-		total_frames = int(T*1000 // self.interval)
-		kwargs = {
-			"init_func": init,
-			"frames": total_frames,
-			"interval": self.interval,
-			"blit": True
-		}
-
-		super().__init__(fig, self.animate, **kwargs)
+		# self.interval = 20
+		# total_frames = int(T*1000 // self.interval)
+		# kwargs = {
+		# 	"init_func": self.init_func,
+		# 	"frames": total_frames,
+		# 	"interval": self.interval,
+		# 	"blit": True
+		# }
+		#
+		# super().__init__(fig, self.animate, **kwargs)
 		self.f = fourier
 
+	def init_func(self):
+		self.x_data = []
+		self.y_data = []
+		self.line.set_data([], [])
+		return [self.line, *[a.line for a in self.arrows]]
 
 	def animate(self, i):
-		t = i * (self.interval / 1000)
+		t = i * (INTERVAL / 1000)
 
 		p = self.f(t)[0]
 		x, y = p.real, p.imag
@@ -54,7 +88,7 @@ class Animator(FuncAnimation):
 			# update each arrow, starting the arrow at the end of the previous one
 			last_end = arrow.update(last_end, t)
 
-		return (self.line, *[a.line for a in self.arrows])
+		return [self.line, *[a.line for a in self.arrows]]
 
 
 class Arrow:
@@ -99,8 +133,10 @@ if __name__ == "__main__":
 	xs = 0.5 * np.cos(ts) + 0.5 * np.cos(2 * ts)
 	ys = np.sin(ts) + 0.25
 
-	points = np.array([ts, xs + 1j * ys]).Ts
-	f = Fourier(points, N=2)
-
-	anim = Animator(fig, ax, f, 6.28)
+	points = np.array([ts, xs + 1j * ys]).T
+	f1 = Fourier(points, N=1)
+	f2 = Fourier(points, N=2)
+	anim1 = Animator(fig, ax, f1, 6.28)
+	anim2 = Animator(fig, ax, f2, 6.28)
+	group_anims = GroupAnimator(6.28, anim1, anim2)
 	plt.show()
